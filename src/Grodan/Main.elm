@@ -30,18 +30,16 @@ offCanvasY = halfHeight + maxItemRadius
 
 -- HELPERS
 
-last : List a -> a
-last xs = 
-  case (head <| reverse xs) of
-    Just last' -> last'
-
-head' : List a -> a
-head' xs = 
+unsafeHead : List a -> a
+unsafeHead xs = 
   case (head xs) of
     Just head' -> head'
 
-tail' : List a -> List a 
-tail' xs = 
+unsafeLast : List a -> a
+unsafeLast = unsafeHead << reverse
+
+unsafeTail : List a -> List a 
+unsafeTail xs = 
   case (tail xs) of
     Just tail' -> tail'
 
@@ -158,7 +156,7 @@ appendNewObject : (Objects, Seed) -> (Objects, Seed)
 appendNewObject (objects, seed) = 
   let 
     (distance, seed') = generate (float 0 itemSpacing) seed
-    yPos = .y (last objects) + distance
+    yPos = .y (unsafeLast objects) + distance
     (xPos, seed'') = generate (float -halfWidth halfWidth) seed'
     (objectType, seed''') = generateObjectType seed''
     newObject = 
@@ -174,9 +172,9 @@ appendNewObject (objects, seed) =
 updateObjects : (Objects, Seed) -> (Objects, Seed)
 updateObjects (objects, seed) = 
   let
-    firstObject = head' objects
-    tailObjects = tail' objects
-    lastObject = last objects
+    firstObject = unsafeHead objects
+    tailObjects = unsafeTail objects
+    lastObject = unsafeLast objects
   in
     if | firstObject.y <= -offCanvasY -> appendNewObject (tailObjects, seed)
        | lastObject.y <= offCanvasY -> appendNewObject (objects, seed)
