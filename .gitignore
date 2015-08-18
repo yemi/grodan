@@ -1,0 +1,6 @@
+dist/
+.DS_Store
+.stack-work/
+elm.js
+elm-stuff/
+**/*.swp
