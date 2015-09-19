@@ -1,4 +1,4 @@
-module Grodan.Main where
+module Main where
 
 import Window
 import Signal exposing (Signal, (<~), (~))
@@ -31,15 +31,15 @@ offCanvasY = halfHeight + maxItemRadius
 -- HELPERS
 
 unsafeHead : List a -> a
-unsafeHead xs = 
+unsafeHead xs =
   case (head xs) of
     Just head' -> head'
 
 unsafeLast : List a -> a
 unsafeLast = unsafeHead << reverse
 
-unsafeTail : List a -> List a 
-unsafeTail xs = 
+unsafeTail : List a -> List a
+unsafeTail xs =
   case (tail xs) of
     Just tail' -> tail'
 
@@ -59,8 +59,8 @@ type FoodType = Berries | Bugs
 
 type ObjectType = Rock | Food FoodType
 
-type alias Object = Positioned 
-  { objectType: ObjectType 
+type alias Object = Positioned
+  { objectType: ObjectType
   , isConsumed: Bool
   , isCrashed: Bool
   }
@@ -71,7 +71,7 @@ type alias Score = Int
 
 type State = Play | Pause | Lost
 
-type alias Game = 
+type alias Game =
   { frog: Frog
   , objects: (Objects, Seed)
   , score: Score
@@ -79,8 +79,8 @@ type alias Game =
   }
 
 defaultGame : Game
-defaultGame = 
-  let 
+defaultGame =
+  let
     objects =
       [
         {
@@ -96,7 +96,7 @@ defaultGame =
           x=300, y=1200, objectType=Food Berries, isConsumed=False, isCrashed=False
         }
       ]
-  in 
+  in
     { objects = (objects, initialSeed 0)
     , frog = { x=0, y=-400, vx=frogSpeed, vy=0, life=100 }
     , score = 0
@@ -114,23 +114,23 @@ within range a b = (a.x |> near b.x range)
                 && (a.y |> near b.y range)
 
 isFood : Object -> Bool
-isFood obj = 
+isFood obj =
   case obj.objectType of
     Rock -> False
     Food _ -> True
 
 isFloatingFood : Object -> Bool
 isFloatingFood obj =
-  if isFood obj then 
+  if isFood obj then
    case obj.objectType of
      Food Berries -> True
      _ -> False
-  else 
+  else
     False
 
 frogAction : Object -> (Frog, (Objects, Seed), Score) -> (Frog, (Objects, Seed), Score)
 frogAction object (frog, (objects, seed), score) =
-  let 
+  let
     shouldEat = within 100 frog object && isFood object
     shouldRemoveObject = within 100 frog object && isFloatingFood object
     isCrash = within 40 frog object && not (isFloatingFood object)
@@ -145,7 +145,7 @@ generateObjectType : Seed -> (ObjectType, Seed)
 generateObjectType seed =
   let
     (num, seed') = generate (float 0 1) seed
-    objectType = 
+    objectType =
       if | num < 0.5 -> Rock
          | num < 0.7 -> Food Berries
          | otherwise -> Food Bugs
@@ -153,24 +153,24 @@ generateObjectType seed =
     (objectType, seed')
 
 appendNewObject : (Objects, Seed) -> (Objects, Seed)
-appendNewObject (objects, seed) = 
-  let 
+appendNewObject (objects, seed) =
+  let
     (distance, seed') = generate (float 0 itemSpacing) seed
     yPos = .y (unsafeLast objects) + distance
     (xPos, seed'') = generate (float -halfWidth halfWidth) seed'
     (objectType, seed''') = generateObjectType seed''
-    newObject = 
+    newObject =
       { x=xPos
       , y=yPos
       , objectType=objectType
       , isConsumed=False
-      , isCrashed=False 
+      , isCrashed=False
       }
   in
     (objects ++ [newObject], seed''')
 
 updateObjects : (Objects, Seed) -> (Objects, Seed)
-updateObjects (objects, seed) = 
+updateObjects (objects, seed) =
   let
     firstObject = unsafeHead objects
     tailObjects = unsafeTail objects
@@ -186,7 +186,7 @@ stepObject complexity object =
 
 stepFrog : Int -> Frog -> (Objects, Seed) -> Score -> (Frog, (Objects, Seed), Score)
 stepFrog horArrow frog (objects, seed) score =
-  let 
+  let
     frog' = if | horArrow == -1 -> { frog | x <- max (-halfWidth + 60) <| frog.x - frog.vx }
                | horArrow == 1  -> { frog | x <- min (halfWidth - 60) <| frog.x + frog.vx }
                | otherwise -> frog
@@ -194,7 +194,7 @@ stepFrog horArrow frog (objects, seed) score =
     foldr frogAction (frog', ([], seed), score) objects
 
 getComplexity : Score -> Float
-getComplexity = (flip (/)) 80 << (+) 100 << toFloat --TODO create some awesome way to decide the complexity 
+getComplexity = (flip (/)) 80 << (+) 100 << toFloat --TODO create some awesome way to decide the complexity
 
 stepGame : Input -> Game -> Game
 stepGame input ({state} as game) =
@@ -204,19 +204,19 @@ stepGame input ({state} as game) =
               | otherwise -> stepGameOver
   in
     func input game
- 
+
 stepPlay : Input -> Game -> Game
-stepPlay {delta, arrows} game = 
-  let 
-    (objects, seed) = game.objects 
+stepPlay {delta, arrows} game =
+  let
+    (objects, seed) = game.objects
     (frog', (objects', seed'), score) = stepFrog arrows.x game.frog (objects, seed) game.score
-    complexity = getComplexity score 
+    complexity = getComplexity score
     state = if | frog'.life <= 0 -> Lost
                | otherwise -> Play
   in
-    { game | objects <- updateObjects (map (stepObject complexity) objects', seed') 
-           , frog <- frog' 
-           , score <- score 
+    { game | objects <- updateObjects (map (stepObject complexity) objects', seed')
+           , frog <- frog'
+           , score <- score
            , state <- state}
 
 stepPause : Input -> Game -> Game
@@ -245,7 +245,7 @@ drawFrog frog =
     |> move (frog.x, frog.y)
 
 drawObject obj =
-  let 
+  let
     color = case obj.objectType of
       Rock -> charcoal
       Food f -> case f of
@@ -253,11 +253,11 @@ drawObject obj =
         Bugs -> brown
   in
     circle 20
-      |> filled color 
+      |> filled color
       |> move (obj.x, obj.y)
 
 drawScore score =
-  toString score 
+  toString score
     |> Text.fromString
     |> Text.height 40
     |> Text.color yellow
@@ -265,23 +265,22 @@ drawScore score =
     |> toForm
     |> move (halfWidth - 100, halfHeight - 100)
 
-display (w,h) game = 
-  let 
+display (w,h) game =
+  let
     objects = group <| map drawObject (fst game.objects)
     background = rect gameWidth gameHeight |> filled blue
-    life = txt (Text.height 40) (toString game.frog.life) 
-             |> toForm 
+    life = txt (Text.height 40) (toString game.frog.life)
+             |> toForm
              |> move (-halfWidth + 100, halfHeight - 100)
   in
     container w h middle <|
-      collage gameWidth gameHeight <| 
+      collage gameWidth gameHeight <|
         [ background
         , objects
-        , drawScore game.score 
+        , drawScore game.score
         , life
-        , drawFrog game.frog 
+        , drawFrog game.frog
         ]
-
 
 -- SIGNALS
 
@@ -295,4 +294,3 @@ input : Signal Input
 input = Signal.sampleOn AnimationFrame.frame (Input <~ space
                                                      ~ arrows
                                                      ~ AnimationFrame.frame)
-

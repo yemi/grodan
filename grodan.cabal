@@ -6,11 +6,11 @@ homepage:            http://github.com/name/project
 license:             BSD3
 license-file:        LICENSE
 author:              Fabian Rios
-maintainer:          fabian.rios@rocafuerte.se 
--- copyright:           
+maintainer:          fabian.rios@rocafuerte.se
+-- copyright:
 category:            Web
 build-type:          Simple
--- extra-source-files:  
+-- extra-source-files:
 cabal-version:       >=1.10
 
 library
@@ -20,7 +20,7 @@ library
   default-language:    Haskell2010
 
 executable grodan-exe
-  hs-source-dirs:      backend 
+  hs-source-dirs:      backend
   main-is:             Main.hs
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
@@ -45,4 +45,4 @@ test-suite grodan-test
 
 source-repository head
   type:     git
-  location: https://github.com/name/projec://github.com/yemi/grodan 
+  location: https://github.com/name/projec://github.com/yemi/grodan
