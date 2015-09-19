@@ -40,7 +40,7 @@ page =
       H.script ! A.src "/static/dist/grodan.js" $ ""
       H.style "body { background: rgb(30, 58, 94); }"
     H.body $ do
-      H.script "Elm.fullscreen(Elm.Main)"
+      H.script "Elm.fullscreen(Elm.Grodan)"
 
 app :: Application
 app = serve api server

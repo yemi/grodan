@@ -1,4 +1,4 @@
-module Main where
+module Grodan where
 
 import Window
 import Signal exposing (Signal, (<~), (~))
