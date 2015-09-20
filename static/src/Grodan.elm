@@ -16,8 +16,7 @@ main : Signal Element
 main = display <~ Window.dimensions ~ gameState
 
 gameState : Signal Game
-gameState =
-  Signal.foldp stepGame defaultGame input
+gameState = Signal.foldp stepGame defaultGame input
 
 input : Signal Input
 input = Signal.sampleOn AnimationFrame.frame (Input <~ space

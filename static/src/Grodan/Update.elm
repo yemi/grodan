@@ -8,13 +8,6 @@ import Grodan.Config exposing (..)
 import Grodan.Model exposing (..)
 import Grodan.Util exposing (..)
 
-near : number -> number -> number -> Bool
-near k c n = n >= k-c && n <= k+c
-
-within : Float -> Positioned a -> Positioned b -> Bool
-within range a b = (a.x |> near b.x range)
-                && (a.y |> near b.y range)
-
 isFood : Object -> Bool
 isFood obj =
   case obj.objectType of
