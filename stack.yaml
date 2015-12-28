@@ -3,8 +3,8 @@ flags: {}
 packages:
 - '.'
 
-extra-deps: 
+extra-deps:
   [ servant-blaze-0.4.4 ]
 
-resolver: 
-  nightly-2015-08-16 
+resolver:
+  nightly-2015-12-27

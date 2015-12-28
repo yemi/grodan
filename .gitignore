@@ -3,4 +3,5 @@ dist/
 .stack-work/
 elm.js
 elm-stuff/
+npm-debug.log
 **/*.swp
