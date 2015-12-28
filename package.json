@@ -1,0 +1,20 @@
+{
+  "name": "grodan",
+  "version": "1.0.0",
+  "description": "Frog game for http://barn.marcorios.se built in Elm",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "elm-make client/src/Grodan.elm --output client/dist/grodan.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yemi/grodan.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yemi/grodan/issues"
+  },
+  "homepage": "https://github.com/yemi/grodan#readme"
+}
